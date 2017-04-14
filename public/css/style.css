@@ -1,0 +1,57 @@
+
+*,
+*:before,
+*:after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	font: 16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #fff;
+	background-color: #000;
+	background-image: url(../img/stars.png);
+	background-size: 300px;
+
+	user-select: none;
+	cursor: default;
+}
+
+canvas {
+	display: block;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+
+	visibility: visible;
+	opacity: 1;
+
+	transform: translate(-50%, -50%);
+	transition: visibility 1s ease, opacity 1s ease;
+}
+
+canvas.hidden {
+	visibility: hidden;
+	opacity: 0;
+}
+
+.loading {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+
+	visibility: visible;
+	opacity: 1;
+
+	transform: translate(-50%, -50%);
+	transition: visibility 1s ease, opacity 1s ease;
+}
+
+.loading.hidden {
+	visibility: hidden;
+	opacity: 0;
+}
