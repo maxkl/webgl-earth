@@ -1,5 +1,7 @@
 precision mediump float;
 
+#define NORMAL_MAP_SCALE 1.5
+
 varying vec3 fragmentLightDirection;
 varying vec2 fragmentUv;
 
@@ -10,7 +12,7 @@ void main() {
 	vec3 lightColor = vec3(1.0, 1.0, 0.8);
 	float lightIntensity = 1.5;
 
-	vec3 normal = normalize((texture2D(normalTexture, fragmentUv).rgb * 2.0 - 1.0) * vec3(10.0, 10.0, 1.0));
+	vec3 normal = normalize((texture2D(normalTexture, fragmentUv).rgb * 2.0 - 1.0) * vec3(NORMAL_MAP_SCALE, NORMAL_MAP_SCALE, 1.0));
 
 	vec3 color = texture2D(diffuseTexture, fragmentUv).rgb;
 
