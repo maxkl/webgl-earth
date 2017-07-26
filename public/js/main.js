@@ -346,8 +346,8 @@
 	}
 
 	Promise.all([
-		load('img', 'img/mars-diffuse.jpg'),
-		load('img', 'img/mars-normal.png'),
+		load('img', 'img/earth-diffuse.jpg'),
+		load('img', 'img/earth-normal.png'),
 		load('txt', 'shaders/default.vert'),
 		load('txt', 'shaders/default.frag')
 	]).then(function (assets) {
