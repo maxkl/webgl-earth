@@ -19,7 +19,7 @@
 	var lastTimestamp;
 
 	var vertexShaderSource, fragmentShaderSource;
-	var imgDiffuse, imgNormal;
+	var imgDiffuse, imgNormal, imgSpecular;
 
 	var viewChanged = true;
 
@@ -34,8 +34,8 @@
 
 	var program;
 	var marsVertexPositionBuffer, marsVertexNormalBuffer, marsVertexTangentBuffer, marsVertexUvBuffer;
-	var diffuseTexture, normalTexture;
-	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, diffuseTextureUniform, normalTextureUniform;
+	var diffuseTexture, normalTexture, specularTexture;
+	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, cameraPositionUniform, diffuseTextureUniform, normalTextureUniform, specularTextureUniform;
 	var vertexPositionAttrib, vertexNormalAttrib, vertexTangentAttrib, vertexUvAttrib;
 	var vertexCount;
 
@@ -78,6 +78,7 @@
 		gl.uniformMatrix4fv(projectionMatrixUniform, false, projectionMatrix);
 		gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
 		gl.uniformMatrix3fv(normalMatrixUniform, false, normalMatrix);
+		gl.uniform3fv(cameraPositionUniform, eye);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, diffuseTexture);
@@ -86,6 +87,10 @@
 		gl.activeTexture(gl.TEXTURE1);
 		gl.bindTexture(gl.TEXTURE_2D, normalTexture);
 		gl.uniform1i(normalTextureUniform, 1);
+
+		gl.activeTexture(gl.TEXTURE2);
+		gl.bindTexture(gl.TEXTURE_2D, specularTexture);
+		gl.uniform1i(specularTextureUniform, 2);
 
 		gl.bindBuffer(gl.ARRAY_BUFFER, marsVertexPositionBuffer);
 		gl.enableVertexAttribArray(vertexPositionAttrib);
@@ -226,13 +231,16 @@
 
 		diffuseTexture = createTexture(imgDiffuse);
 		normalTexture = createTexture(imgNormal);
+		specularTexture = createTexture(imgSpecular);
 
 		program = compileProgram(vertexShaderSource, fragmentShaderSource);
 		projectionMatrixUniform = gl.getUniformLocation(program, 'projectionMatrix');
 		viewMatrixUniform = gl.getUniformLocation(program, 'viewMatrix');
 		normalMatrixUniform = gl.getUniformLocation(program, 'normalMatrix');
+		cameraPositionUniform = gl.getUniformLocation(program, 'cameraPosition');
 		diffuseTextureUniform = gl.getUniformLocation(program, 'diffuseTexture');
 		normalTextureUniform = gl.getUniformLocation(program, 'normalTexture');
+		specularTextureUniform = gl.getUniformLocation(program, 'specularTexture');
 		vertexPositionAttrib = gl.getAttribLocation(program, 'vertexPosition');
 		vertexNormalAttrib = gl.getAttribLocation(program, 'vertexNormal');
 		vertexTangentAttrib = gl.getAttribLocation(program, 'vertexTangent');
@@ -348,13 +356,15 @@
 	Promise.all([
 		load('img', 'img/earth-diffuse.jpg'),
 		load('img', 'img/earth-normal.png'),
+		load('img', 'img/earth-specular.jpg'),
 		load('txt', 'shaders/default.vert'),
 		load('txt', 'shaders/default.frag')
 	]).then(function (assets) {
 		imgDiffuse = assets[0];
 		imgNormal = assets[1];
-		vertexShaderSource = assets[2];
-		fragmentShaderSource = assets[3];
+		imgSpecular = assets[2];
+		vertexShaderSource = assets[3];
+		fragmentShaderSource = assets[4];
 
 		init();
 		play();

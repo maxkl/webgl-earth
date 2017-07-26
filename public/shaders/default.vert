@@ -3,6 +3,7 @@ precision mediump float;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat3 normalMatrix;
+uniform vec3 cameraPosition;
 
 attribute vec3 vertexPosition;
 attribute vec3 vertexNormal;
@@ -10,6 +11,7 @@ attribute vec3 vertexTangent;
 attribute vec2 vertexUv;
 
 varying vec3 fragmentLightDirection;
+varying vec3 fragmentViewDirection;
 varying vec2 fragmentUv;
 
 mediump mat3 transpose(in mediump mat3 inMatrix) {
@@ -36,6 +38,7 @@ void main() {
 	mat3 TBN = transpose(mat3(T, B, N));
 
 	fragmentLightDirection = TBN * lightDirection;
+	fragmentViewDirection = TBN * (viewMatrix * vec4(cameraPosition - vertexPosition, 0.0)).xyz;
 
 	fragmentUv = vertexUv;
 
