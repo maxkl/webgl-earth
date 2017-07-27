@@ -55,3 +55,9 @@ canvas.hidden {
 	visibility: hidden;
 	opacity: 0;
 }
+
+#theme {
+	position: fixed;
+	top: 10px;
+	left: 15px;
+}

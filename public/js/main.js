@@ -10,6 +10,7 @@
 	var VEC3_UP = vec3.fromValues(0, 1, 0);
 
 	var $loading = document.querySelector('.loading');
+	var $themeSelect = document.querySelector('#theme');
 	var canvas = document.querySelector('canvas');
 	var gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
 
@@ -146,7 +147,16 @@
 		marsVertexUvBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.uvs), gl.STATIC_DRAW);
 	}
 
-	function init() {
+	function initTheme() {
+		diffuseTexture = createTexture(gl, imgDiffuse);
+		normalTexture = createTexture(gl, imgNormal);
+		specularTexture = createTexture(gl, imgSpecular);
+
+		$loading.classList.add('hidden');
+		canvas.classList.remove('hidden');
+	}
+
+	function initCommon() {
 		resize();
 		window.addEventListener('resize', resize);
 
@@ -154,10 +164,6 @@
 		calcEye();
 
 		genMesh();
-
-		diffuseTexture = createTexture(gl, imgDiffuse);
-		normalTexture = createTexture(gl, imgNormal);
-		specularTexture = createTexture(gl, imgSpecular);
 
 		program = compileProgram(gl, vertexShaderSource, fragmentShaderSource);
 		projectionMatrixUniform = gl.getUniformLocation(program, 'projectionMatrix');
@@ -242,30 +248,59 @@
 			var touch = evt.changedTouches[0];
 			pointerUp(touch.clientX, touch.clientY);
 		});
-
-		$loading.classList.add('hidden');
-		canvas.classList.remove('hidden');
 	}
 
-	load('json', 'themes/realistic-day.json').then(function (_theme) {
-		theme = _theme;
+	function loadTheme(themeName) {
+		$loading.classList.remove('hidden');
 
-		return Promise.all([
-			load('img', 'img/' + theme.material.textures.diffuse),
-			load('img', 'img/' + theme.material.textures.normal),
-			load('img', 'img/' + theme.material.textures.specular),
-			load('txt', 'shaders/default.vert'),
-			load('txt', 'shaders/default.frag')
-		]);
-	}).then(function (assets) {
-		imgDiffuse = assets[0];
-		imgNormal = assets[1];
-		imgSpecular = assets[2];
-		vertexShaderSource = assets[3];
-		fragmentShaderSource = assets[4];
+		return load('json', 'themes/' + themeName + '.json').then(function (_theme) {
+			theme = _theme;
 
-		init();
-		play();
-	}).catch(err => console.error(err));
+			return Promise.all([
+				load('img', 'img/' + theme.material.textures.diffuse),
+				load('img', 'img/' + theme.material.textures.normal),
+				load('img', 'img/' + theme.material.textures.specular),
+				load('txt', 'shaders/default.vert'),
+				load('txt', 'shaders/default.frag')
+			]);
+		}).then(function (assets) {
+			imgDiffuse = assets[0];
+			imgNormal = assets[1];
+			imgSpecular = assets[2];
+			vertexShaderSource = assets[3];
+			fragmentShaderSource = assets[4];
+
+			initTheme();
+			play();
+		}).catch(err => console.error(err));
+	}
+
+	var themeNames = [
+		'realistic-day'
+	];
+
+	themeNames.forEach(function (themeName) {
+		var o = document.createElement('option');
+		o.value = themeName;
+		o.textContent = themeName;
+		$themeSelect.appendChild(o);
+	});
+
+	Promise.all([
+		load('txt', 'shaders/default.vert'),
+		load('txt', 'shaders/default.frag')
+	]).then(function (shaders) {
+		vertexShaderSource = shaders[0];
+		fragmentShaderSource = shaders[1];
+
+		initCommon();
+
+		$themeSelect.addEventListener('change', function () {
+			var themeName = $themeSelect.value;
+			loadTheme(themeName);
+		});
+
+		loadTheme(themeNames[0]);
+	});
 
 })();
