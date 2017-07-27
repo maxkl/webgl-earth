@@ -35,9 +35,11 @@
 	var program;
 	var marsVertexPositionBuffer, marsVertexNormalBuffer, marsVertexTangentBuffer, marsVertexUvBuffer;
 	var diffuseTexture, normalTexture, specularTexture;
-	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, cameraPositionUniform, diffuseTextureUniform, normalTextureUniform, specularTextureUniform;
+	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, cameraPositionUniform, lightColorUniform, lightIntensityUniform, specularityUniform, specularIntensityUniform, normalMapScaleUniform, diffuseTextureUniform, normalTextureUniform, specularTextureUniform;
 	var vertexPositionAttrib, vertexNormalAttrib, vertexTangentAttrib, vertexUvAttrib;
 	var vertexCount;
+
+	var theme;
 
 	function calcEye() {
 		vec3.set(eye,
@@ -79,6 +81,12 @@
 		gl.uniformMatrix4fv(viewMatrixUniform, false, viewMatrix);
 		gl.uniformMatrix3fv(normalMatrixUniform, false, normalMatrix);
 		gl.uniform3fv(cameraPositionUniform, eye);
+
+		gl.uniform3fv(lightColorUniform, theme.light.color);
+		gl.uniform1f(lightIntensityUniform, theme.light.intensity);
+		gl.uniform1f(specularityUniform, theme.material.specularity);
+		gl.uniform1f(specularIntensityUniform, theme.material.specularIntensity);
+		gl.uniform1f(normalMapScaleUniform, theme.material.normalMapScale);
 
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, diffuseTexture);
@@ -238,6 +246,11 @@
 		viewMatrixUniform = gl.getUniformLocation(program, 'viewMatrix');
 		normalMatrixUniform = gl.getUniformLocation(program, 'normalMatrix');
 		cameraPositionUniform = gl.getUniformLocation(program, 'cameraPosition');
+		lightColorUniform = gl.getUniformLocation(program, 'lightColor');
+		lightIntensityUniform = gl.getUniformLocation(program, 'lightIntensity');
+		specularityUniform = gl.getUniformLocation(program, 'specularity');
+		specularIntensityUniform = gl.getUniformLocation(program, 'specularIntensity');
+		normalMapScaleUniform = gl.getUniformLocation(program, 'normalMapScale');
 		diffuseTextureUniform = gl.getUniformLocation(program, 'diffuseTexture');
 		normalTextureUniform = gl.getUniformLocation(program, 'normalTexture');
 		specularTextureUniform = gl.getUniformLocation(program, 'specularTexture');
@@ -346,6 +359,11 @@
 				req.open('GET', url);
 				req.send();
 			});
+		},
+		'json': function (url) {
+			return loaders['txt'](url).then(function (json) {
+				return JSON.parse(json);
+			});
 		}
 	};
 
@@ -353,13 +371,17 @@
 		return loaders[type](url);
 	}
 
-	Promise.all([
-		load('img', 'img/earth-diffuse.jpg'),
-		load('img', 'img/earth-normal.png'),
-		load('img', 'img/earth-specular.jpg'),
-		load('txt', 'shaders/default.vert'),
-		load('txt', 'shaders/default.frag')
-	]).then(function (assets) {
+	load('json', 'themes/realistic-day.json').then(function (_theme) {
+		theme = _theme;
+
+		return Promise.all([
+			load('img', 'img/' + theme.material.textures.diffuse),
+			load('img', 'img/' + theme.material.textures.normal),
+			load('img', 'img/' + theme.material.textures.specular),
+			load('txt', 'shaders/default.vert'),
+			load('txt', 'shaders/default.frag')
+		]);
+	}).then(function (assets) {
 		imgDiffuse = assets[0];
 		imgNormal = assets[1];
 		imgSpecular = assets[2];
