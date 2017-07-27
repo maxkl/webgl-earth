@@ -136,92 +136,14 @@
 		gl.viewport(0, 0, width, height);
 	}
 
-	function createBuffer(target, data) {
-		var buffer = gl.createBuffer();
-		gl.bindBuffer(target, buffer);
-		gl.bufferData(target, data, gl.STATIC_DRAW);
-		return buffer;
-	}
-
 	function genMesh() {
-		var positions = [];
-		var normals = [];
-		var tangents = [];
-		var uvs = [];
+		var data = makeSphereMesh(30, 40);
 
-		var verticalSegments = 30;
-		var horitontalSegments = 40;
-
-		function addVertex(segHoriz, segVert) {
-			var yaw = segHoriz * TWO_PI / horitontalSegments;
-			var pitch = Math.PI / 2 - segVert * Math.PI / verticalSegments;
-			var x = Math.cos(yaw) * Math.cos(pitch);
-			var y = Math.sin(pitch);
-			var z = Math.sin(yaw) * Math.cos(pitch);
-			positions.push(x, y, z);
-
-			normals.push(x, y, z);
-
-			var tx = z;
-			var tz = -x;
-			var l = Math.sqrt(tx * tx + tz * tz);
-			tx = tx / l;
-			tz = tz / l;
-			tangents.push(tx, 0, tz);
-
-			uvs.push(1 - segHoriz / horitontalSegments, segVert / verticalSegments);
-		}
-
-		for(var segVert = 0; segVert < verticalSegments; segVert++) {
-			for(var segHoriz = 0; segHoriz < horitontalSegments; segHoriz++) {
-				addVertex(segHoriz, segVert);
-				addVertex(segHoriz + 1, segVert + 1);
-				addVertex(segHoriz, segVert + 1);
-
-				addVertex(segHoriz, segVert);
-				addVertex(segHoriz + 1, segVert);
-				addVertex(segHoriz + 1, segVert + 1);
-			}
-		}
-
-		vertexCount = positions.length / 3;
-		marsVertexPositionBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(positions));
-		marsVertexNormalBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(normals));
-		marsVertexTangentBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(tangents));
-		marsVertexUvBuffer = createBuffer(gl.ARRAY_BUFFER, new Float32Array(uvs));
-	}
-
-	function createTexture(img) {
-		var tex = gl.createTexture();
-		gl.bindTexture(gl.TEXTURE_2D, tex);
-		gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, img);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-		gl.bindTexture(gl.TEXTURE_2D, null);
-		return tex;
-	}
-
-	function compileShader(type, source) {
-		var shader = gl.createShader(type);
-		gl.shaderSource(shader, source);
-		gl.compileShader(shader);
-		if(!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-			throw new Error(gl.getShaderInfoLog(shader));
-		}
-		return shader;
-	}
-
-	function compileProgram(vertexShaderSource, fragmentShaderSource) {
-		var program = gl.createProgram();
-		var vertexShader = compileShader(gl.VERTEX_SHADER, vertexShaderSource);
-		var fragmentShader = compileShader(gl.FRAGMENT_SHADER, fragmentShaderSource);
-		gl.attachShader(program, vertexShader);
-		gl.attachShader(program, fragmentShader);
-		gl.linkProgram(program);
-		if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-			throw new Error(gl.getProgramInfoLog(program));
-		}
-		return program;
+		vertexCount = data.vertexCount;
+		marsVertexPositionBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.positions), gl.STATIC_DRAW);
+		marsVertexNormalBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.normals), gl.STATIC_DRAW);
+		marsVertexTangentBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.tangents), gl.STATIC_DRAW);
+		marsVertexUvBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.uvs), gl.STATIC_DRAW);
 	}
 
 	function init() {
@@ -233,11 +155,11 @@
 
 		genMesh();
 
-		diffuseTexture = createTexture(imgDiffuse);
-		normalTexture = createTexture(imgNormal);
-		specularTexture = createTexture(imgSpecular);
+		diffuseTexture = createTexture(gl, imgDiffuse);
+		normalTexture = createTexture(gl, imgNormal);
+		specularTexture = createTexture(gl, imgSpecular);
 
-		program = compileProgram(vertexShaderSource, fragmentShaderSource);
+		program = compileProgram(gl, vertexShaderSource, fragmentShaderSource);
 		projectionMatrixUniform = gl.getUniformLocation(program, 'projectionMatrix');
 		viewMatrixUniform = gl.getUniformLocation(program, 'viewMatrix');
 		normalMatrixUniform = gl.getUniformLocation(program, 'normalMatrix');
@@ -323,48 +245,6 @@
 
 		$loading.classList.add('hidden');
 		canvas.classList.remove('hidden');
-	}
-
-	var loaders = {
-		'img': function (url) {
-			return new Promise(function (resolve, reject) {
-				var img = new Image();
-				img.onload = function () {
-					img.onload = img.onerror = null;
-					resolve(img);
-				};
-				img.onerror = function () {
-					reject(new Error('Image failed to load'));
-				};
-				img.src = url;
-			});
-		},
-		'txt': function (url) {
-			return new Promise(function (resolve, reject) {
-				var req = new XMLHttpRequest();
-				req.onload = function () {
-					if(req.status === 200) {
-						resolve(req.responseText);
-					} else {
-						reject(new Error('Server error: ' + req.status));
-					}
-				};
-				req.onerror = function () {
-					reject(new Error('Client/network error'));
-				};
-				req.open('GET', url);
-				req.send();
-			});
-		},
-		'json': function (url) {
-			return loaders['txt'](url).then(function (json) {
-				return JSON.parse(json);
-			});
-		}
-	};
-
-	function load(type, url) {
-		return loaders[type](url);
 	}
 
 	load('json', 'themes/realistic-day.json').then(function (_theme) {
