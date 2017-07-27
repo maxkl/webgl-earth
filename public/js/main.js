@@ -226,7 +226,7 @@
 			}
 		}
 
-		window.addEventListener('mousedown', function (evt) {
+		canvas.addEventListener('mousedown', function (evt) {
 			pointerDown(evt.clientX, evt.clientY);
 		});
 		window.addEventListener('mousemove', function (evt) {
@@ -236,7 +236,7 @@
 			pointerUp(evt.clientX, evt.clientY);
 		});
 
-		window.addEventListener('touchstart', function (evt) {
+		canvas.addEventListener('touchstart', function (evt) {
 			var touch = evt.changedTouches[0];
 			pointerDown(touch.clientX, touch.clientY);
 		});
