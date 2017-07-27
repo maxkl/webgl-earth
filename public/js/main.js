@@ -56,7 +56,6 @@
 		var deltaTime = lastTimestamp ? (timestamp - lastTimestamp) * 0.001 : 0;
 		lastTimestamp = timestamp;
 
-		//if(yaw !== targetYaw || pitch !== targetPitch) {
 		yaw += (targetYaw - yaw) * SPEED * deltaTime;
 		pitch += (targetPitch - pitch) * SPEED * deltaTime;
 
@@ -66,9 +65,6 @@
 		mat3.fromMat4(normalMatrix, viewMatrix);
 		mat3.invert(normalMatrix, normalMatrix);
 		mat3.transpose(normalMatrix, normalMatrix);
-
-		//viewChanged = false;
-		//}
 
 		gl.depthMask(true);
 		gl.depthFunc(gl.LEQUAL);
