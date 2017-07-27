@@ -259,16 +259,12 @@
 			return Promise.all([
 				load('img', 'img/' + theme.material.textures.diffuse),
 				load('img', 'img/' + theme.material.textures.normal),
-				load('img', 'img/' + theme.material.textures.specular),
-				load('txt', 'shaders/default.vert'),
-				load('txt', 'shaders/default.frag')
+				load('img', 'img/' + theme.material.textures.specular)
 			]);
 		}).then(function (assets) {
 			imgDiffuse = assets[0];
 			imgNormal = assets[1];
 			imgSpecular = assets[2];
-			vertexShaderSource = assets[3];
-			fragmentShaderSource = assets[4];
 
 			initTheme();
 			play();
