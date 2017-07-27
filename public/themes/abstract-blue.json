@@ -1,0 +1,16 @@
+{
+	"material": {
+		"specularity": 4,
+		"specularIntensity": 0.5,
+		"normalMapScale": 0.3,
+		"textures": {
+			"diffuse": "earth-diffuse.jpg",
+			"normal": "earth-normal.png",
+			"specular": "earth-specular.jpg"
+		}
+	},
+	"light": {
+		"color": [0, 0, 1],
+		"intensity": 1.5
+	}
+}

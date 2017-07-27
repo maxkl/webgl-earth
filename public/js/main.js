@@ -276,7 +276,8 @@
 	}
 
 	var themeNames = [
-		'realistic-day'
+		'realistic-day',
+		'abstract-blue'
 	];
 
 	themeNames.forEach(function (themeName) {
