@@ -5,8 +5,8 @@
 		"normalMapScale": 0.3,
 		"textures": {
 			"diffuse": "abstract-blue-diffuse.jpg",
-			"normal": "earth-normal.png",
-			"specular": "earth-specular.jpg"
+			"normal": "normal.png",
+			"specular": "specular.jpg"
 		}
 	},
 	"light": {
