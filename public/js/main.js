@@ -217,8 +217,9 @@
 				var diffX = x - startX;
 				var diffY = y - startY;
 
-				targetYaw = startYaw + diffX * 0.004;
-				targetPitch = startPitch + diffY * 0.004;
+				var s = -0.0000614446 * distance * distance + 0.0023544 * distance - 0.00251021;
+				targetYaw = startYaw + diffX * s;
+				targetPitch = startPitch + diffY * s;
 
 				if(targetPitch > Math.PI / 2) {
 					targetPitch = Math.PI / 2;
