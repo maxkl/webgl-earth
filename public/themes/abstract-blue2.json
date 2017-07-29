@@ -1,7 +1,7 @@
 {
 	"material": {
 		"specularity": 4,
-		"specularIntensity": 0.3,
+		"specularIntensity": 0.27,
 		"normalMapScale": 0.3,
 		"textures": {
 			"diffuse": "abstract-blue2-diffuse.jpg",

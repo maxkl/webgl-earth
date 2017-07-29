@@ -27,7 +27,7 @@ void main() {
 
 	vec3 normalizedViewDirection = normalize(fragmentViewDirection);
 	float specularBrightness = max(0.0, dot(reflect(-normalizedLightDirection, normal), normalizedViewDirection));
-	vec3 specularComponent = specularColor * specularIntensity * pow(specularBrightness, specularity);
+	vec3 specularComponent = lightIntensity * specularColor * lightColor * specularIntensity * pow(specularBrightness, specularity);
 
 	gl_FragColor = vec4(ambientComponent + diffuseComponent + specularComponent, 1.0);
 }
