@@ -6,6 +6,11 @@
 
 	var SPEED = 3;
 
+	var DISTANCE_MIN = 1.37;
+	var DISTANCE_MAX = 20;
+	var ZOOM_SPEED = 1.1;
+	var ZOOM_SCALE = 1 / 1000;
+
 	var VEC3_ZERO = vec3.fromValues(0, 0, 0);
 	var VEC3_UP = vec3.fromValues(0, 1, 0);
 
@@ -252,6 +257,17 @@
 		window.addEventListener('touchend', function (evt) {
 			var touch = evt.changedTouches[0];
 			pointerUp(touch.clientX, touch.clientY);
+		});
+
+		canvas.addEventListener('wheel', function (evt) {
+			var scrollAmount = evt.deltaMode === MouseEvent.DOM_DELTA_PIXEL ? evt.deltaY : (evt.deltaY * 16);
+			//distance += scrollAmount * SCROLL_SCALE;
+			distance *= Math.pow(ZOOM_SPEED, scrollAmount * ZOOM_SCALE);
+			if (distance > DISTANCE_MAX) {
+				distance = DISTANCE_MAX;
+			} else if (distance < DISTANCE_MIN) {
+				distance = DISTANCE_MIN;
+			}
 		});
 	}
 
