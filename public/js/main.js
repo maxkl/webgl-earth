@@ -296,7 +296,9 @@
 
 	var themeNames = [
 		'realistic-day',
+		'hd/realistic-day',
 		'realistic-night',
+		'hd/realistic-night',
 		'abstract-blue',
 		'abstract-blue2'
 	];
