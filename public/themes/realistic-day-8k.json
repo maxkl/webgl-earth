@@ -1,0 +1,17 @@
+{
+	"material": {
+		"ambientIntensity": 0.1,
+		"specularity": 4,
+		"specularIntensity": 0.33,
+		"normalMapScale": 0.3,
+		"textures": {
+			"diffuse": "realistic-day-diffuse-8k.jpg",
+			"normal": "normal-8k.jpg",
+			"specular": "specular-8k.jpg"
+		}
+	},
+	"light": {
+		"color": [1, 1, 1],
+		"intensity": 1.5
+	}
+}

@@ -5,9 +5,9 @@
 		"specularIntensity": 0.2,
 		"normalMapScale": 0.3,
 		"textures": {
-			"diffuse": "hd/realistic-night-diffuse.jpg",
-			"normal": "hd/normal.jpg",
-			"specular": "hd/specular.jpg"
+			"diffuse": "realistic-night-diffuse-8k.jpg",
+			"normal": "normal-8k.jpg",
+			"specular": "specular-8k.jpg"
 		}
 	},
 	"light": {
