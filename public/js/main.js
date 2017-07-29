@@ -150,9 +150,9 @@
 	}
 
 	function initTheme(newTheme) {
-		diffuseTexture = createTexture(gl, imgDiffuse);
-		normalTexture = createTexture(gl, imgNormal);
-		specularTexture = createTexture(gl, imgSpecular);
+		diffuseTexture = createTexture(gl, imgDiffuse, true);
+		normalTexture = createTexture(gl, imgNormal, true);
+		specularTexture = createTexture(gl, imgSpecular, true);
 
 		theme = newTheme;
 
