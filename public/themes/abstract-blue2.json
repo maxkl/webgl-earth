@@ -1,5 +1,6 @@
 {
 	"material": {
+		"ambientIntensity": 0.1,
 		"specularity": 4,
 		"specularIntensity": 0.27,
 		"normalMapScale": 0.3,

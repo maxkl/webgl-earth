@@ -6,6 +6,7 @@ varying vec2 fragmentUv;
 
 uniform vec3 lightColor;
 uniform float lightIntensity;
+uniform float ambientIntensity;
 uniform float specularity;
 uniform float specularIntensity;
 uniform float normalMapScale;
@@ -19,7 +20,7 @@ void main() {
 	vec3 diffuseColor = texture2D(diffuseTexture, fragmentUv).rgb;
 	vec3 specularColor = texture2D(specularTexture, fragmentUv).rgb;
 
-	vec3 ambientComponent = 0.1 * diffuseColor;
+	vec3 ambientComponent = ambientIntensity * diffuseColor;
 
 	vec3 normalizedLightDirection = normalize(fragmentLightDirection);
 	float diffuseBrightness = max(0.0, dot(normal, normalizedLightDirection));

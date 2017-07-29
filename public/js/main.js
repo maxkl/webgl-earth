@@ -36,7 +36,7 @@
 	var program;
 	var marsVertexPositionBuffer, marsVertexNormalBuffer, marsVertexTangentBuffer, marsVertexUvBuffer;
 	var diffuseTexture, normalTexture, specularTexture;
-	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, cameraPositionUniform, lightColorUniform, lightIntensityUniform, specularityUniform, specularIntensityUniform, normalMapScaleUniform, diffuseTextureUniform, normalTextureUniform, specularTextureUniform;
+	var projectionMatrixUniform, viewMatrixUniform, normalMatrixUniform, cameraPositionUniform, lightColorUniform, lightIntensityUniform, ambientIntensityUniform, specularityUniform, specularIntensityUniform, normalMapScaleUniform, diffuseTextureUniform, normalTextureUniform, specularTextureUniform;
 	var vertexPositionAttrib, vertexNormalAttrib, vertexTangentAttrib, vertexUvAttrib;
 	var vertexCount;
 
@@ -81,6 +81,7 @@
 
 		gl.uniform3fv(lightColorUniform, theme.light.color);
 		gl.uniform1f(lightIntensityUniform, theme.light.intensity);
+		gl.uniform1f(ambientIntensityUniform, theme.material.ambientIntensity);
 		gl.uniform1f(specularityUniform, theme.material.specularity);
 		gl.uniform1f(specularIntensityUniform, theme.material.specularIntensity);
 		gl.uniform1f(normalMapScaleUniform, theme.material.normalMapScale);
@@ -174,6 +175,7 @@
 		cameraPositionUniform = gl.getUniformLocation(program, 'cameraPosition');
 		lightColorUniform = gl.getUniformLocation(program, 'lightColor');
 		lightIntensityUniform = gl.getUniformLocation(program, 'lightIntensity');
+		ambientIntensityUniform = gl.getUniformLocation(program, 'ambientIntensity');
 		specularityUniform = gl.getUniformLocation(program, 'specularity');
 		specularIntensityUniform = gl.getUniformLocation(program, 'specularIntensity');
 		normalMapScaleUniform = gl.getUniformLocation(program, 'normalMapScale');
