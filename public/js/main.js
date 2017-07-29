@@ -262,7 +262,6 @@
 
 		canvas.addEventListener('wheel', function (evt) {
 			var scrollAmount = evt.deltaMode === MouseEvent.DOM_DELTA_PIXEL ? evt.deltaY : (evt.deltaY * 16);
-			//distance += scrollAmount * SCROLL_SCALE;
 			distance *= Math.pow(ZOOM_SPEED, scrollAmount * ZOOM_SCALE);
 			if (distance > DISTANCE_MAX) {
 				distance = DISTANCE_MAX;
