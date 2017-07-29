@@ -147,10 +147,12 @@
 		marsVertexUvBuffer = createBuffer(gl, gl.ARRAY_BUFFER, new Float32Array(data.uvs), gl.STATIC_DRAW);
 	}
 
-	function initTheme() {
+	function initTheme(newTheme) {
 		diffuseTexture = createTexture(gl, imgDiffuse);
 		normalTexture = createTexture(gl, imgNormal);
 		specularTexture = createTexture(gl, imgSpecular);
+
+		theme = newTheme;
 
 		$loading.classList.add('hidden');
 		canvas.classList.remove('hidden');
@@ -253,21 +255,19 @@
 	function loadTheme(themeName) {
 		$loading.classList.remove('hidden');
 
-		return load('json', 'themes/' + themeName + '.json').then(function (_theme) {
-			theme = _theme;
-
+		return load('json', 'themes/' + themeName + '.json').then(function (newTheme) {
 			return Promise.all([
-				load('img', 'img/' + theme.material.textures.diffuse),
-				load('img', 'img/' + theme.material.textures.normal),
-				load('img', 'img/' + theme.material.textures.specular)
-			]);
-		}).then(function (assets) {
-			imgDiffuse = assets[0];
-			imgNormal = assets[1];
-			imgSpecular = assets[2];
+				load('img', 'img/' + newTheme.material.textures.diffuse),
+				load('img', 'img/' + newTheme.material.textures.normal),
+				load('img', 'img/' + newTheme.material.textures.specular)
+			]).then(function (assets) {
+				imgDiffuse = assets[0];
+				imgNormal = assets[1];
+				imgSpecular = assets[2];
 
-			initTheme();
-			play();
+				initTheme(newTheme);
+				play();
+			});
 		}).catch(err => console.error(err));
 	}
 
