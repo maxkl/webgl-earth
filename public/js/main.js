@@ -40,6 +40,7 @@
 	var vertexPositionAttrib, vertexNormalAttrib, vertexTangentAttrib, vertexUvAttrib;
 	var vertexCount;
 
+	var currentThemeName;
 	var theme;
 
 	function calcEye() {
@@ -255,6 +256,12 @@
 	}
 
 	function loadTheme(themeName) {
+		if (themeName === currentThemeName) {
+			return Promise.resolve();
+		}
+
+		currentThemeName = themeName;
+
 		$loading.classList.remove('hidden');
 
 		return load('json', 'themes/' + themeName + '.json').then(function (newTheme) {
@@ -270,7 +277,21 @@
 				initTheme(newTheme);
 				play();
 			});
-		}).catch(err => console.error(err));
+		}).catch(function (err) {
+			$loading.classList.add('hidden');
+			throw err;
+		});
+	}
+
+	function loadThemeFromHash() {
+		var hashThemeName = window.location.hash.substr(1);
+		$themeSelect.value = hashThemeName;
+		return loadTheme(hashThemeName).catch(function (err) {
+			console.warn('Theme specified in URL hash not found, loading default');
+			$themeSelect.value = defaultThemeName;
+			window.location.hash = '#' + defaultThemeName;
+			return loadTheme(defaultThemeName);
+		});
 	}
 
 	var themeNames = [
@@ -279,6 +300,7 @@
 		'abstract-blue',
 		'abstract-blue2'
 	];
+	var defaultThemeName = themeNames[0];
 
 	themeNames.forEach(function (themeName) {
 		var o = document.createElement('option');
@@ -298,10 +320,19 @@
 
 		$themeSelect.addEventListener('change', function () {
 			var themeName = $themeSelect.value;
-			loadTheme(themeName);
+			window.location.hash = '#' + themeName;
+			loadTheme(themeName).catch(err => console.error(err));
 		});
 
-		loadTheme(themeNames[0]);
-	});
+		window.addEventListener('hashchange', function () {
+			loadThemeFromHash().catch(err => console.error(err));
+		});
+
+		if (window.location.hash !== '') {
+			return loadThemeFromHash();
+		} else {
+			return loadTheme(defaultThemeName);
+		}
+	}).catch(err => console.error(err));
 
 })();
